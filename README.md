@@ -51,6 +51,7 @@ npm run preview
 ├── package-lock.json          # 锁定 npm 依赖
 ├── vite.config.ts             # Vite 配置，静态资源 base 为 ./
 ├── .github/workflows/ci.yml    # push / pull_request 检查
+├── .github/workflows/pages.yml # 测试、构建并部署 GitHub Pages
 ├── docs/IMPLEMENTATION_STATUS.md
 ├── MVP方案.md
 ├── 开发与验收.md
@@ -84,18 +85,19 @@ npm run preview
 
 模型密钥应保留在服务端，不能放进 React 源码、公开仓库或 `VITE_*` 变量。`VITE_*` 会进入前端构建产物，不适合保存密钥。
 
-## GitHub 与静态部署
+## GitHub 与线上部署
 
-本仓库附带的 CI 只执行安装、测试和构建，**不会自动发布网站**，也不需要 Secrets。GitHub 仓库状态、测试结果和部署状态分别记录在 [实施状态](./docs/IMPLEMENTATION_STATUS.md)，以实际执行结果为准。
+- 网站地址：[取景 FRAME](https://tianjianluo33-sketch.github.io/photo-mentor/)。实际上线和验证结果见 [实施状态](./docs/IMPLEMENTATION_STATUS.md)。
+- 发布分支：`codex/website-scaffold`，也是当前默认分支。
+- `ci.yml` 检查 push / pull_request；`pages.yml` 在发布分支代码变动后执行 `npm ci`、`npm test`、`npm run build`，全部成功后才发布 `dist/`。
+- 单独修改 Markdown 文档不会重新部署网站。需要手动发布时，进入 **Actions → Deploy GitHub Pages → Run workflow**，选择发布分支。
+- Pages 的发布来源为 **GitHub Actions**，使用内置的 `GITHUB_TOKEN` 和 OIDC，无需自建部署密钥。只有部署任务拥有 `pages: write` 与 `id-token: write` 权限。
 
-网站使用 hash 导航与 `base: './'`。因此，构建产物可部署在域名根路径或 GitHub Pages 的仓库子路径，无需为每个页面配置服务端重写。
+网站使用 hash 导航与 `base: './'`，支持 GitHub Pages 的仓库子路径。直接分享 `https://tianjianluo33-sketch.github.io/photo-mentor/#/coach` 可进入现场指导。
 
-如需发布到 GitHub Pages：
+`package.json` 中的 `private: true` 用于阻止误发布 npm 包，与 GitHub 仓库的公开状态无关。
 
-1. 在本地或独立部署流程中运行 `npm ci`、`npm test` 和 `npm run build`。
-2. 将 `dist/` 的内容作为静态站点发布目录；不要将整个源码仓库作为构建产物。
-3. 在仓库 **Settings → Pages** 中选择所采用的发布方式。可使用单独的 GitHub Actions 部署流程上传 `dist/`，或将构建产物放在专门发布分支的根目录。
-4. 发布后检查首页、两个核心入口、刷新后的 hash 页面、图片选择和窄屏布局，再记录实际地址与验证结果。
+配置依据：[GitHub Pages 自定义工作流](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)、[Vite 静态部署](https://vite.dev/guide/static-deploy)。
 
 ## 产品与开发资料
 

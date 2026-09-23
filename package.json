@@ -11,8 +11,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "format": "prettier --write src tests *.json *.ts index.html .github/workflows/ci.yml",
-    "format:check": "prettier --check src tests *.json *.ts index.html .github/workflows/ci.yml"
+    "format": "prettier --write src tests *.json *.ts index.html .github/workflows/*.yml",
+    "format:check": "prettier --check src tests *.json *.ts index.html .github/workflows/*.yml"
   },
   "dependencies": {
     "lucide-react": "1.47.0",
