@@ -17,7 +17,7 @@
 
 ## 验证记录
 
-验证日期：2026-09-23。以下浏览器检查针对本网站的本机开发服务，尚未进行真实手机硬件或线上部署验收。
+验证日期：2026-09-23。本机完整流程检查与线上发布检查分别记录如下；尚未进行真实手机硬件验收。
 
 | 检查 | 当前记录 |
 | --- | --- |
@@ -27,9 +27,10 @@
 | 浏览器核心流程 | 两个独立入口、三节练习、课程目标带入、方法卡带入、专家方案与现场限制、示例比较、保存和重载记录、清除记录通过 |
 | 个人图片预览与两图对比 | 实际选择两张 PNG，本机图片解码成功，保存“各有表达”判断成功；重复选择当前模式不清空图片 |
 | 窄屏与键盘操作 | 桌面及窄屏可操作；320px 首页、方法卡、现场准备未发现水平溢出；方向键调整快门和 ISO 达成本题目标 |
-| GitHub 仓库与代码推送 | 仓库 [photo-mentor](https://github.com/tianjianluo33-sketch/photo-mentor)，网站源码、锁文件和产品文档随本版本提交 |
-| GitHub Actions | CI 已配置；每次推送的实际结果见仓库 [Actions](https://github.com/tianjianluo33-sketch/photo-mentor/actions) |
-| 线上发布与地址 | 已准备 GitHub Pages 发布配置；首轮线上发布与浏览器验证进行中 |
+| GitHub 仓库与代码推送 | 公开仓库 [photo-mentor](https://github.com/tianjianluo33-sketch/photo-mentor)，网站源码、锁文件和产品文档随本版本提交 |
+| GitHub Actions | 发布提交 `45a0a1b` 的 [CI](https://github.com/tianjianluo33-sketch/photo-mentor/actions/runs/35919472820) 与 [Pages 部署](https://github.com/tianjianluo33-sketch/photo-mentor/actions/runs/35919472796) 均成功；22 项规则测试与生产构建通过 |
+| 线上发布与地址 | 已发布到 [取景 FRAME](https://tianjianluo33-sketch.github.io/photo-mentor/)，HTTPS 已启用；无需登录即可访问 |
+| 线上资源与交互 | 未认证请求取得首页、JS、CSS、图标 HTTP 200；浏览器验证课程快门交互、独立现场指导及重拍对比；新标签直接打开 `#/coach` 成功 |
 
 ## 下一阶段
 
@@ -45,3 +46,9 @@
 - 实机移动端拍摄入口、iOS/Android 文件选择行为、不同浏览器 HEIC 转换。
 - 文件损坏/超大像素/选择取消的全部设备组合，以及跨设备云同步（未实现）。
 - 真实 AI 分析、实时相机画面、外拍建议有效性、用户学习迁移与商业需求。
+
+## 发布说明
+
+用户于本次任务授权线上部署或公开代码库。私有仓库启用 Pages 时，GitHub 返回当前账号方案不支持；随后按授权将此仓库设为公开并发布。
+
+`pages.yml` 只发布 `dist/` 静态产物。向 `codex/website-scaffold` 推送代码会在测试和构建成功后自动更新网站；文档变更不触发部署。首次发布版本为 `45a0a1b`。
