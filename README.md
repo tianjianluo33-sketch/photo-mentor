@@ -1,6 +1,8 @@
 # 取景 FRAME · 手机摄影导师框架
 
-当前本地版本 **0.4.0**。产品以手机观察现场为基础，用户最终用手机或相机拍摄。本阶段先完成不依赖摄像头和 AI 的交互框架，指导内容使用明确标注的原创内置示例。
+当前版本 **0.4.0**。产品以手机观察现场为基础，用户最终用手机或相机拍摄。本阶段先完成不依赖摄像头和 AI 的交互框架，指导内容使用明确标注的原创内置示例。
+
+**在线体验：[取景 FRAME](https://tianjianluo33-sketch.github.io/photo-mentor/)**。手机或电脑浏览器均可直接打开，无需启动本地服务器。
 
 ## 可以体验什么
 
@@ -55,7 +57,9 @@ npm run preview
 
 ## 发布边界
 
-本轮修改在本地实现和验收，未推送或更新线上网站。既有公开站点：[取景 FRAME](https://tianjianluo33-sketch.github.io/photo-mentor/)；其历史发布证据见实施状态，不代表已包含本轮修改。
+2026-09-27 已将当前网站提交到公开 GitHub 仓库，并发布到 GitHub Pages。发布源码为 `309fdba`；[CI](https://github.com/tianjianluo33-sketch/photo-mentor/actions/runs/36373157126) 与 [Pages 部署](https://github.com/tianjianluo33-sketch/photo-mentor/actions/runs/36373157160) 均成功。公开 HTML、JavaScript 和 CSS 已与本地生产构建逐字节核对一致。
+
+线上首页、五项导航和框内快门调节已通过桌面浏览器的手机尺寸检查；实体 iPhone / Android 的操作与硬件能力仍待实机验收。产品计划 PDF、截图和临时产物保留在本地，不随源码上传。
 
 现有 `.github/workflows/pages.yml` 配置会在 `codex/website-scaffold` 分支代码推送后测试、构建并发布。项目采用 hash 路由与 `base: './'`，适配静态托管的仓库子路径。单独修改 Markdown 不触发该部署工作流。
 
