@@ -13,9 +13,11 @@ export interface LessonRecord {
 export interface CompareRecord {
   id: string;
   source: "demo" | "personal";
-  preference: "before" | "after" | "both" | "unsure";
+  preference: "before" | "after" | "both" | "unsure" | "no-change";
   goal: string;
   createdAt: string;
+  reason?: string;
+  scenarioId?: string;
 }
 
 export interface SavedState {
@@ -114,11 +116,36 @@ function isPreference(value: unknown): value is CompareRecord["preference"] {
     value === "before" ||
     value === "after" ||
     value === "both" ||
-    value === "unsure"
+    value === "unsure" ||
+    value === "no-change"
   );
 }
 
-function readComparison(value: unknown): CompareRecord | null {
+/** Shared by entry forms and persistence so a rejected field is never shown as saved. */
+export function isSafeLocalText(
+  value: unknown,
+  maxLength: number,
+  allowEmpty = false,
+): value is string {
+  return (
+    typeof value === "string" &&
+    value.length <= maxLength &&
+    (allowEmpty || value.trim().length > 0) &&
+    !/[\u0000-\u001f\u007f]|(?:[a-z][a-z0-9+.-]*:\/\/|\b(?:data|blob|javascript|file):|\bwww\.)/i.test(
+      value,
+    )
+  );
+}
+
+export function isValidComparisonGoal(value: unknown): boolean {
+  return (
+    typeof value === "string" && isSafeLocalText(value.trim(), MAX_GOAL_LENGTH)
+  );
+}
+
+export function normalizeComparisonRecord(
+  value: unknown,
+): CompareRecord | null {
   if (
     !isObject(value) ||
     !hasFields(value, ["id", "source", "preference", "goal", "createdAt"])
@@ -136,15 +163,7 @@ function readComparison(value: unknown): CompareRecord | null {
 
   const goal = value.goal.trim();
   // Goals contain short labels only; photo data and URLs belong to transient UI state.
-  if (
-    goal.length < 1 ||
-    goal.length > MAX_GOAL_LENGTH ||
-    /[\u0000-\u001f\u007f]/.test(goal) ||
-    /(?:[a-z][a-z0-9+.-]*:\/\/|\b(?:data|blob|javascript|file):|\bwww\.)/i.test(
-      goal,
-    )
-  )
-    return null;
+  if (!isValidComparisonGoal(goal)) return null;
 
   return {
     id: value.id,
@@ -152,6 +171,14 @@ function readComparison(value: unknown): CompareRecord | null {
     preference: value.preference,
     goal,
     createdAt: value.createdAt,
+    ...(isSafeLocalText(value.reason, 240)
+      ? { reason: value.reason.trim() }
+      : {}),
+    ...(value.source === "demo" &&
+    typeof value.scenarioId === "string" &&
+    /^[a-zA-Z0-9_-]{1,60}$/.test(value.scenarioId)
+      ? { scenarioId: value.scenarioId }
+      : {}),
   };
 }
 
@@ -175,7 +202,7 @@ function cleanState(value: unknown): SavedState {
 
   const seen = new Set<string>();
   for (const candidate of value.comparisons) {
-    const comparison = readComparison(candidate);
+    const comparison = normalizeComparisonRecord(candidate);
     if (!comparison || seen.has(comparison.id)) continue;
     seen.add(comparison.id);
     clean.comparisons.push(comparison);
@@ -231,7 +258,7 @@ export function recordComparison(
   record: CompareRecord,
 ): SavedState {
   const next = cleanState(state);
-  const comparison = readComparison(record);
+  const comparison = normalizeComparisonRecord(record);
   if (!comparison) return next;
   next.comparisons = [
     comparison,
@@ -248,6 +275,8 @@ export function preferenceLabel(value: CompareRecord["preference"]): string {
       return "更喜欢重拍";
     case "both":
       return "两张各有优点";
+    case "no-change":
+      return "没有明显变化";
     default:
       return "暂时不确定";
   }

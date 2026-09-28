@@ -207,7 +207,13 @@ test("comparison text and IDs are bounded, URLs are rejected, and valid labels a
 });
 
 test("preferences preserve user choice instead of treating retake as inherently better", () => {
-  for (const preference of ["before", "after", "both", "unsure"] as const) {
+  for (const preference of [
+    "before",
+    "after",
+    "both",
+    "unsure",
+    "no-change",
+  ] as const) {
     const state = recordComparison(EMPTY_STATE, comparison({ preference }));
     assert.equal(
       parseSavedState(JSON.stringify(state)).comparisons[0].preference,
@@ -217,4 +223,6 @@ test("preferences preserve user choice instead of treating retake as inherently 
   }
   assert.equal(preferenceLabel("before"), "更喜欢原图");
   assert.equal(preferenceLabel("unsure"), "暂时不确定");
+  assert.equal(preferenceLabel("no-change"), "没有明显变化");
+  assert.notEqual(preferenceLabel("no-change"), preferenceLabel("both"));
 });

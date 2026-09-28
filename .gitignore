@@ -6,3 +6,5 @@ dist/
 !.env.example
 *.log
 .local/
+output/
+tmp/
